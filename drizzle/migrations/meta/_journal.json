@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791255747517,
+      "tag": "0000_create_vyrai_platform_core",
+      "breakpoints": true
+    }
+  ]
 }

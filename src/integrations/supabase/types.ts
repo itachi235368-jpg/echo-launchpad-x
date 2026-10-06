@@ -14,16 +14,437 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      activity_events: {
+        Row: {
+          created_at: string
+          details: Json
+          event_type: string
+          id: number
+          is_public: boolean
+          owner_id: string | null
+          persona_id: string
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          details?: Json
+          event_type: string
+          id?: never
+          is_public?: boolean
+          owner_id?: string | null
+          persona_id: string
+          title: string
+        }
+        Update: {
+          created_at?: string
+          details?: Json
+          event_type?: string
+          id?: never
+          is_public?: boolean
+          owner_id?: string | null
+          persona_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "activity_events_persona_id_fkey"
+            columns: ["persona_id"]
+            isOneToOne: false
+            referencedRelation: "personas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      media_assets: {
+        Row: {
+          caption: string
+          cost_usd: number
+          created_at: string
+          id: string
+          kind: string
+          owner_id: string | null
+          persona_id: string
+          prompt: string
+          provider_run_id: string | null
+          published_at: string | null
+          status: string
+          storage_path: string | null
+          thumbnail_url: string | null
+        }
+        Insert: {
+          caption?: string
+          cost_usd?: number
+          created_at?: string
+          id?: string
+          kind: string
+          owner_id?: string | null
+          persona_id: string
+          prompt?: string
+          provider_run_id?: string | null
+          published_at?: string | null
+          status?: string
+          storage_path?: string | null
+          thumbnail_url?: string | null
+        }
+        Update: {
+          caption?: string
+          cost_usd?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          owner_id?: string | null
+          persona_id?: string
+          prompt?: string
+          provider_run_id?: string | null
+          published_at?: string | null
+          status?: string
+          storage_path?: string | null
+          thumbnail_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_assets_persona_id_fkey"
+            columns: ["persona_id"]
+            isOneToOne: false
+            referencedRelation: "personas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      personas: {
+        Row: {
+          appearance_prompt: string
+          avatar_url: string | null
+          bio: string
+          cover_url: string | null
+          created_at: string
+          disclosure: string
+          follower_count: number
+          id: string
+          is_demo: boolean
+          name: string
+          niche: string
+          owner_id: string | null
+          personality: Json
+          slug: string
+          status: string
+          symbol: string
+          updated_at: string
+          voice_id: string | null
+        }
+        Insert: {
+          appearance_prompt?: string
+          avatar_url?: string | null
+          bio?: string
+          cover_url?: string | null
+          created_at?: string
+          disclosure?: string
+          follower_count?: number
+          id?: string
+          is_demo?: boolean
+          name: string
+          niche: string
+          owner_id?: string | null
+          personality?: Json
+          slug: string
+          status?: string
+          symbol: string
+          updated_at?: string
+          voice_id?: string | null
+        }
+        Update: {
+          appearance_prompt?: string
+          avatar_url?: string | null
+          bio?: string
+          cover_url?: string | null
+          created_at?: string
+          disclosure?: string
+          follower_count?: number
+          id?: string
+          is_demo?: boolean
+          name?: string
+          niche?: string
+          owner_id?: string | null
+          personality?: Json
+          slug?: string
+          status?: string
+          symbol?: string
+          updated_at?: string
+          voice_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string | null
+          id: string
+          preferences: Json
+          updated_at: string
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id: string
+          preferences?: Json
+          updated_at?: string
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          preferences?: Json
+          updated_at?: string
+          username?: string | null
+        }
+        Relationships: []
+      }
+      scheduled_posts: {
+        Row: {
+          attempts: number
+          caption: string
+          channel: string
+          created_at: string
+          id: string
+          last_error: string | null
+          media_id: string | null
+          owner_id: string
+          persona_id: string
+          scheduled_for: string
+          status: string
+        }
+        Insert: {
+          attempts?: number
+          caption?: string
+          channel: string
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          media_id?: string | null
+          owner_id: string
+          persona_id: string
+          scheduled_for: string
+          status?: string
+        }
+        Update: {
+          attempts?: number
+          caption?: string
+          channel?: string
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          media_id?: string | null
+          owner_id?: string
+          persona_id?: string
+          scheduled_for?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_posts_media_id_fkey"
+            columns: ["media_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "scheduled_posts_persona_id_fkey"
+            columns: ["persona_id"]
+            isOneToOne: false
+            referencedRelation: "personas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tokens: {
+        Row: {
+          burn_bps: number
+          created_at: string
+          creator_bps: number
+          curve_progress: number
+          holders_count: number
+          id: string
+          launch_signature: string | null
+          launched_at: string | null
+          market_cap_usd: number
+          mint_address: string | null
+          network: string
+          owner_id: string | null
+          persona_id: string
+          price_usd: number
+          status: string
+          supply: number
+          treasury_bps: number
+          volume_24h_usd: number
+        }
+        Insert: {
+          burn_bps?: number
+          created_at?: string
+          creator_bps?: number
+          curve_progress?: number
+          holders_count?: number
+          id?: string
+          launch_signature?: string | null
+          launched_at?: string | null
+          market_cap_usd?: number
+          mint_address?: string | null
+          network?: string
+          owner_id?: string | null
+          persona_id: string
+          price_usd?: number
+          status?: string
+          supply?: number
+          treasury_bps?: number
+          volume_24h_usd?: number
+        }
+        Update: {
+          burn_bps?: number
+          created_at?: string
+          creator_bps?: number
+          curve_progress?: number
+          holders_count?: number
+          id?: string
+          launch_signature?: string | null
+          launched_at?: string | null
+          market_cap_usd?: number
+          mint_address?: string | null
+          network?: string
+          owner_id?: string | null
+          persona_id?: string
+          price_usd?: number
+          status?: string
+          supply?: number
+          treasury_bps?: number
+          volume_24h_usd?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tokens_persona_id_fkey"
+            columns: ["persona_id"]
+            isOneToOne: true
+            referencedRelation: "personas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      treasuries: {
+        Row: {
+          allowed_services: string[]
+          approval_above_usd: number
+          daily_limit_usd: number
+          id: string
+          kill_switch: boolean
+          monthly_limit_usd: number
+          operating_balance_usd: number
+          owner_id: string | null
+          persona_id: string
+          reserve_usd: number
+          updated_at: string
+        }
+        Insert: {
+          allowed_services?: string[]
+          approval_above_usd?: number
+          daily_limit_usd?: number
+          id?: string
+          kill_switch?: boolean
+          monthly_limit_usd?: number
+          operating_balance_usd?: number
+          owner_id?: string | null
+          persona_id: string
+          reserve_usd?: number
+          updated_at?: string
+        }
+        Update: {
+          allowed_services?: string[]
+          approval_above_usd?: number
+          daily_limit_usd?: number
+          id?: string
+          kill_switch?: boolean
+          monthly_limit_usd?: number
+          operating_balance_usd?: number
+          owner_id?: string | null
+          persona_id?: string
+          reserve_usd?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "treasuries_persona_id_fkey"
+            columns: ["persona_id"]
+            isOneToOne: true
+            referencedRelation: "personas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallet_links: {
+        Row: {
+          chain: string
+          created_at: string
+          id: string
+          user_id: string
+          verified_at: string
+          wallet_address: string
+        }
+        Insert: {
+          chain?: string
+          created_at?: string
+          id?: string
+          user_id: string
+          verified_at?: string
+          wallet_address: string
+        }
+        Update: {
+          chain?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+          verified_at?: string
+          wallet_address?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "moderator" | "creator"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +571,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "moderator", "creator"],
+    },
   },
 } as const

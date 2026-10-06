@@ -29,7 +29,10 @@ function CreatePage() {
   const slug = useMemo(() => name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""), [name]);
 
   async function saveDraft() {
-    if (!userId || !name || !symbol || !niche) return toast.error("Complete the identity and token fields first.");
+    if (!userId || !name || !symbol || !niche) {
+      toast.error("Complete the identity and token fields first.");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase.from("personas").insert({ owner_id: userId, slug: `${slug}-${Date.now().toString().slice(-5)}`, name, symbol: symbol.toUpperCase(), niche, bio, appearance_prompt: appearance, personality: { boldness: boldness[0] }, status: "review" });
     if (error) toast.error(error.message); else toast.success("Persona saved for review.");

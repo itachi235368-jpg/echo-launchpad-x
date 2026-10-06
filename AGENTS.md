@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep public discovery/profile pages separate from authenticated creator operations so public content remains shareable and creator data stays protected.
+- Model blockchain integration behind a typed service boundary and validate on Solana devnet before any mainnet activation.

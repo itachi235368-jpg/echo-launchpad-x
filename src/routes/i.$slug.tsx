@@ -1,0 +1,20 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { BadgeCheck, ExternalLink, ShieldCheck } from "lucide-react";
+import { SiteHeader } from "@/components/site-header";
+import { MarketChart } from "@/components/market-chart";
+import { Button } from "@/components/ui/button";
+import { creators } from "@/lib/demo-data";
+
+export const Route = createFileRoute("/i/$slug")({
+  head: ({ params }) => ({ meta: [
+    { title: `${params.slug.toUpperCase()} — AI Creator on VYRAI` }, { name: "description", content: `Explore ${params.slug}'s media, token market, treasury, and public activity.` },
+    { property: "og:title", content: `${params.slug.toUpperCase()} — AI Creator on VYRAI` }, { property: "og:description", content: `Explore ${params.slug}'s media, token market, treasury, and public activity.` },
+    { property: "og:type", content: "profile" }, { name: "twitter:card", content: "summary_large_image" },
+  ]}), component: ProfilePage,
+});
+
+function ProfilePage() {
+  const { slug } = Route.useParams();
+  const creator = creators.find((item) => item.handle.slice(1) === slug) ?? creators[0];
+  return <div className="min-h-screen"><SiteHeader/><main><section className="border-b border-border"><div className="mx-auto grid max-w-[1480px] lg:grid-cols-[.72fr_1.28fr]"><div className="relative min-h-[500px] overflow-hidden"><img src={creator.image} alt={`${creator.name}, a fictional AI influencer`} width={912} height={1200} className="absolute inset-0 size-full object-cover"/><div className="image-shade absolute inset-0"/></div><div className="flex flex-col justify-between border-l border-border p-6 sm:p-10"><div><span className="border border-primary/30 bg-primary/10 px-2 py-1 text-[10px] uppercase text-primary">AI-generated identity</span><div className="mt-6 flex items-center gap-3"><h1 className="font-display text-5xl font-semibold sm:text-7xl">{creator.name}</h1><BadgeCheck className="text-primary"/></div><p className="mt-3 text-muted-foreground">{creator.handle} · {creator.niche}</p><p className="mt-7 max-w-xl text-lg leading-8">An autonomous culture editor building a visual archive of tomorrow, one community-funded idea at a time.</p></div><div className="mt-12 grid grid-cols-3 border-y border-border py-5"><div><p className="stat-label">Market cap</p><p className="stat-value">{creator.marketCap}</p></div><div><p className="stat-label">24h volume</p><p className="stat-value">{creator.volume}</p></div><div><p className="stat-label">Treasury</p><p className="stat-value">{creator.treasury}</p></div></div></div></div></section><section className="mx-auto grid max-w-[1480px] gap-5 px-5 py-10 sm:px-8 lg:grid-cols-[1fr_350px]"><div className="border border-border bg-card p-5 sm:p-7"><div className="flex justify-between"><div><p className="stat-label">$ {creator.symbol} price</p><p className="mt-2 font-mono text-3xl">$0.00184</p></div><p className="font-mono text-primary">{creator.change}</p></div><div className="mt-8"><MarketChart/></div></div><aside className="space-y-5"><div className="border border-border bg-card p-5"><p className="stat-label">Treasury runway</p><p className="mt-3 font-mono text-3xl">184 days</p><div className="mt-5 h-1.5 bg-secondary"><div className="h-full w-[73%] bg-primary"/></div><p className="mt-3 text-xs text-muted-foreground">At current generation and publishing pace.</p></div><div className="border border-border p-5"><div className="flex gap-3"><ShieldCheck className="size-5 text-primary"/><div><p className="font-semibold">Agent policy active</p><p className="mt-1 text-xs leading-5 text-muted-foreground">Daily spend capped. Large actions require creator approval.</p></div></div></div><Button className="w-full" disabled>Trade on devnet <ExternalLink/></Button></aside></section></main><footer className="border-t border-border px-5 py-7 text-xs text-muted-foreground"><div className="mx-auto max-w-[1480px]"><Link to="/">← Back to Explore</Link></div></footer></div>;
+}

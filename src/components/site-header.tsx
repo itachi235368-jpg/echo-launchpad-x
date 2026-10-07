@@ -1,13 +1,15 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Menu, Sparkles, Wallet } from "lucide-react";
+import { Menu, Sparkles } from "lucide-react";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { ConnectButton } from "@/components/wallet-provider";
 
 const links = [
   { to: "/", label: "Explore" },
   { to: "/studio", label: "Studio" },
   { to: "/create", label: "Create" },
+  { to: "/launch", label: "Launch token" },
 ] as const;
 
 export function Brand() {
@@ -41,9 +43,7 @@ export function SiteHeader() {
           ))}
         </nav>
         <div className="hidden items-center gap-2 md:flex">
-          <Button asChild variant="ghost">
-            <Link to="/auth">Sign in</Link>
-          </Button>
+          <ConnectButton />
           <Button asChild>
             <Link to="/create"><Sparkles /> Launch an AI</Link>
           </Button>
@@ -56,7 +56,7 @@ export function SiteHeader() {
         <div className="border-t border-border bg-background px-4 py-4 md:hidden">
           <nav className="grid gap-1" aria-label="Mobile navigation">
             {links.map((link) => <Link key={link.to} to={link.to} onClick={() => setOpen(false)} className="px-3 py-3 text-sm text-foreground">{link.label}</Link>)}
-            <Link to="/auth" className="mt-2 flex items-center gap-2 border-t border-border px-3 pt-4 text-sm text-foreground"><Wallet className="size-4" /> Sign in</Link>
+            <ConnectButton className="mt-2 w-full" />
           </nav>
         </div>
       )}

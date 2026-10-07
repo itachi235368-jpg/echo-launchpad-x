@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { DEFAULT_SUPPLY, launchToken, validateToken, type LaunchReceipt } from "@/lib/token-launch";
 
 export const Route = createFileRoute("/launch")({
-  validateSearch: (search: Record<string, unknown>) => ({ name: typeof search.name === "string" ? search.name : "", symbol: typeof search.symbol === "string" ? search.symbol : "" }),
+  validateSearch: (search: Record<string, unknown>) => ({ name: typeof search['name'] === "string" ? search['name'] : "", symbol: typeof search['symbol'] === "string" ? search['symbol'] : "" }),
   head: () => ({ meta: [
     { title: "Launch a Devnet Token — VYRAI" }, { name: "description", content: "Create a fixed-supply Solana devnet token with your own wallet on VYRAI." },
     { property: "og:title", content: "Launch a Devnet Token — VYRAI" }, { property: "og:description", content: "Create a fixed-supply Solana devnet token with your own wallet on VYRAI." },
@@ -47,8 +47,10 @@ function LaunchPage() {
       setReceipt(result); setConfirmed(true);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Token launch failed. Please try again.");
-      const saved = localStorage.getItem("vyrai:last-launch");
-      if (saved) setReceipt(JSON.parse(saved) as LaunchReceipt);
+      try {
+        const saved = localStorage.getItem("vyrai:last-launch");
+        if (saved) setReceipt(JSON.parse(saved) as LaunchReceipt);
+      } catch { /* Show the original launch error when storage is unavailable. */ }
     } finally { setBusy(false); setStatus(""); }
   }
 

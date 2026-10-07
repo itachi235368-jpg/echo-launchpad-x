@@ -35,8 +35,9 @@ export async function launchToken(wallet: SolanaWallet, input: TokenInput, progr
   const totalSize = mintSize + spl.TYPE_SIZE + spl.LENGTH_SIZE + metadata.pack(meta).length;
   progress("Checking devnet balance…");
   const rent = await connection.getMinimumBalanceForRentExemption(totalSize);
+  const accountRent = await connection.getMinimumBalanceForRentExemption(spl.ACCOUNT_SIZE);
   const balance = await connection.getBalance(owner);
-  if (balance < rent + 100000) throw new Error("Not enough devnet SOL. Fund your wallet using the Solana faucet, then try again.");
+  if (balance < rent + accountRent + 100000) throw new Error("Not enough devnet SOL. Fund your wallet using the Solana faucet, then try again.");
   const ata = spl.getAssociatedTokenAddressSync(mint.publicKey, owner, false, spl.TOKEN_2022_PROGRAM_ID);
   const transaction = new web3.Transaction().add(
     web3.SystemProgram.createAccount({ fromPubkey: owner, newAccountPubkey: mint.publicKey, space: mintSize, lamports: rent, programId: spl.TOKEN_2022_PROGRAM_ID }),
@@ -58,7 +59,8 @@ export async function launchToken(wallet: SolanaWallet, input: TokenInput, progr
   const signature = await connection.sendRawTransaction(signed.serialize(), { skipPreflight: false, maxRetries: 3 });
   // Save the submitted receipt before confirmation so a timeout cannot hide a sent transaction.
   const receipt: LaunchReceipt = { mint: mint.publicKey.toBase58(), signature, owner: owner.toBase58(), ...input, network: "devnet" };
-  localStorage.setItem("vyrai:last-launch", JSON.stringify(receipt));
+  try { localStorage.setItem("vyrai:last-launch", JSON.stringify(receipt)); }
+  catch { /* Continue on-chain confirmation even when browser storage is disabled. */ }
   progress("Confirming on Solana devnet…");
   const confirmation = await connection.confirmTransaction({ signature, ...block }, "confirmed");
   if (confirmation.value.err) throw new Error(`Transaction failed. Check ${signature} on Solana Explorer.`);

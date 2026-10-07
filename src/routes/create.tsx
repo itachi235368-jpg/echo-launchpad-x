@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
+import { ConnectButton } from "@/components/wallet-provider";
 
 export const Route = createFileRoute("/create")({
   head: () => ({ meta: [

@@ -1,6 +1,6 @@
 # VYRAI roadmap
 
-- [ ] Redesign front page as Monumental Cover with original character, signal-red palette, and architectural typography
+- [x] Redesign front page as Monumental Cover with original character, signal-red palette, and architectural typography
 
 - [x] Original brand and responsive public discovery experience
 - [x] Public AI influencer profiles with market and treasury views

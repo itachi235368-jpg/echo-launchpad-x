@@ -1,18 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, CircleDollarSign, Radar, ShieldCheck, Sparkles } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { CreatorCard } from "@/components/creator-card";
-import { MarketChart } from "@/components/market-chart";
+import coverImage from "@/assets/vyrai-cover.jpg";
 import { SiteHeader } from "@/components/site-header";
 import { creators } from "@/lib/demo-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({ meta: [
-    { title: "Explore AI Creators — VYRAI" },
-    { name: "description", content: "Discover token-powered AI creators, live treasuries, and original media on VYRAI." },
-    { property: "og:title", content: "Explore AI Creators — VYRAI" },
-    { property: "og:description", content: "Discover token-powered AI creators, live treasuries, and original media on VYRAI." },
+    { title: "VYRAI — Original AI Characters & Devnet Tokens" },
+    { name: "description", content: "Create an original AI persona, explore fictional creator examples, and launch a wallet-signed token on Solana devnet." },
+    { property: "og:title", content: "VYRAI — Original AI Characters & Devnet Tokens" },
+    { property: "og:description", content: "Original characters. New possibilities. Design your AI persona and launch a fixed-supply devnet token with VYRAI." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },
   ]}),
@@ -21,45 +21,26 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="cover-theme min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main>
-        <section className="border-b border-border">
-          <div className="mx-auto grid max-w-[1480px] lg:grid-cols-[1.05fr_.95fr]">
-            <div className="flex min-h-[560px] flex-col justify-between px-5 py-14 sm:px-8 lg:px-12 lg:py-20">
-              <div>
-                <div className="mb-10 flex items-center gap-3 text-xs font-semibold uppercase tracking-[.16em] text-primary"><span className="h-px w-9 bg-primary" /> The creator economy, autonomous</div>
-                <h1 className="max-w-3xl font-display text-5xl font-semibold leading-[.94] sm:text-7xl lg:text-[5.6rem]">
-                  Create the face.<br/><span className="text-primary">Launch the future.</span>
-                </h1>
-                <p className="mt-7 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">Design an original AI influencer, give it a voice, and launch a community-owned token that funds every new idea.</p>
-              </div>
-              <div className="mt-12 flex flex-wrap items-center gap-3">
-                <Button asChild size="lg" className="h-12 px-6"><a href="/create"><Sparkles /> Create your AI</a></Button>
-                <Button asChild size="lg" variant="outline" className="h-12 px-6"><a href="#trending">Explore creators <ArrowRight /></a></Button>
-              </div>
-            </div>
-            <div className="relative min-h-[430px] overflow-hidden border-t border-border lg:min-h-[560px] lg:border-l lg:border-t-0">
-              <img src={creators[0].image} alt="NYRA, a fictional AI fashion creator" width={912} height={1200} className="absolute inset-0 size-full object-cover object-top" />
-              <div className="image-shade absolute inset-0" />
-              <div className="absolute left-5 top-5 border border-foreground/15 bg-background/70 px-3 py-2 font-mono text-[10px] uppercase tracking-[.14em] backdrop-blur">Live creator · $NYRA</div>
-              <div className="absolute inset-x-0 bottom-0 p-5 sm:p-8">
-                <div className="mb-4 flex items-end justify-between"><div><p className="font-display text-4xl font-semibold">NYRA</p><p className="mt-1 text-sm text-foreground/70">Future fashion, rendered daily</p></div><p className="font-mono text-xl font-semibold text-primary">+28.4%</p></div>
-                <MarketChart compact />
-              </div>
+        <section className="cover-stage border-b border-border" aria-label="VYRAI creator cover">
+          <img src={coverImage} alt="Original fictional AI fashion character in silver tailoring with a red scarf" width={1536} height={1024} fetchPriority="high" className="cover-photo" />
+          <div className="cover-content cover-reveal">
+            <p className="flex items-center gap-3 text-[10px] font-semibold uppercase tracking-[.16em] text-primary"><span className="h-px w-8 bg-primary"/>Independent identities / 001</p>
+            <h1 className="cover-title font-display">VYRAI<span className="text-primary">.</span></h1>
+            <div className="cover-intro">
+              <div className="max-w-[290px] shrink-0"><p className="font-display text-2xl font-medium leading-tight">Original characters.<br/><span className="text-muted-foreground">New possibilities.</span></p><p className="mt-5 max-w-[270px] text-sm leading-6 text-muted-foreground">Shape an AI identity. Give your imagination a name, a point of view, and a token of its own.</p></div>
+              <div className="grid w-full max-w-[255px] gap-3"><Button asChild size="lg" className="h-12 justify-between px-5"><Link to="/create">Create your AI <ArrowRight/></Link></Button><Button asChild size="lg" variant="outline" className="h-12 px-5"><Link to="/launch" search={{name:"",symbol:""}}>Launch devnet token</Link></Button></div>
             </div>
           </div>
+          <div className="cover-caption"><p className="text-[10px] font-semibold uppercase tracking-[.14em]">Demo AI creator</p><p className="mt-1 text-xs text-muted-foreground">An original synthetic identity</p></div>
         </section>
+        <section className="border-b border-border" aria-label="Token launch details"><div className="mx-auto grid max-w-[1480px] grid-cols-3 items-center gap-3 px-5 py-6 sm:px-8 lg:grid-cols-[1fr_1fr_1fr_auto] lg:px-12"><p className="text-[10px] font-semibold uppercase sm:text-xs"><span className="mr-2 inline-block size-1.5 rounded-full bg-primary"/>Solana devnet</p><p className="text-[10px] font-semibold uppercase text-muted-foreground sm:text-xs">Wallet-signed</p><p className="text-[10px] font-semibold uppercase text-muted-foreground sm:text-xs">Fixed supply</p><a href="#trending" className="hidden items-center gap-3 text-xs text-foreground lg:flex">Meet the creators <ArrowRight className="size-4 text-primary"/></a></div></section>
 
-        <section className="border-b border-border bg-card/40">
-          <div className="mx-auto grid max-w-[1480px] grid-cols-2 divide-x divide-border lg:grid-cols-4">
-            {[['$3.72M','Creator market cap'],['$592K','24h volume'],['$102K','AI treasuries'],['18.4K','Active collectors']].map(([value,label]) => <div key={label} className="px-5 py-7 sm:px-8"><p className="font-mono text-xl font-semibold sm:text-2xl">{value}</p><p className="mt-1 text-xs uppercase text-muted-foreground">{label}</p></div>)}
-          </div>
-        </section>
-
-        <section id="trending" className="mx-auto max-w-[1480px] px-5 py-16 sm:px-8 lg:py-24">
+        <section id="trending" className="mx-auto max-w-[1480px] px-5 py-10 sm:px-8 lg:py-12">
           <div className="mb-8 flex flex-wrap items-end justify-between gap-5">
-            <div><p className="mb-3 text-xs font-semibold uppercase tracking-[.16em] text-primary">Live on VYRAI</p><h2 className="font-display text-4xl font-semibold sm:text-5xl">Creators to watch</h2></div>
+            <div><p className="mb-3 text-xs font-semibold uppercase tracking-[.16em] text-primary">Demo creator collection</p><h2 className="font-display text-4xl font-semibold sm:text-5xl">Creators to watch</h2></div>
             <div className="flex border border-border bg-card p-1"><button className="bg-secondary px-4 py-2 text-xs font-semibold text-foreground">Trending</button><button className="px-4 py-2 text-xs text-muted-foreground">New</button><button className="px-4 py-2 text-xs text-muted-foreground">Treasuries</button></div>
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

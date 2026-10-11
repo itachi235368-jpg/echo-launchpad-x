@@ -1,5 +1,7 @@
 # VYRAI roadmap
 
+- [ ] Add selectable AI models and verified persona identity generation in Create AI
+
 - [x] Redesign front page as Monumental Cover with original character, signal-red palette, and architectural typography
 
 - [x] Original brand and responsive public discovery experience

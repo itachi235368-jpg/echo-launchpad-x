@@ -15,3 +15,4 @@
 - The standalone launch path creates a wallet-owned fixed-supply devnet Token-2022 mint; do not describe it as a bonding-curve launch or fee-split deployment.
 - Keep submitted transaction receipts locally for recovery without treating wallet connection as creator-account authentication or publishing unverified token data.
 - Scope front-page theme overrides to its page wrapper so creator tools retain their existing theme and functionality.
+- Keep persona model allowlisting shared between the selector and authenticated generation function; gateway calls and credentials stay in server-only modules.

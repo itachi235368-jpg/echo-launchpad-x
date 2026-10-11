@@ -9,6 +9,10 @@ import { Slider } from "@/components/ui/slider";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { ConnectButton } from "@/components/wallet-provider";
+import { useServerFn } from "@tanstack/react-start";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { defaultPersonaModel, personaModels } from "@/lib/persona-models";
+import { generateIdentity } from "@/lib/persona.functions";
 
 export const Route = createFileRoute("/create")({
   head: () => ({ meta: [
@@ -21,6 +25,20 @@ export const Route = createFileRoute("/create")({
 const steps = ["Identity", "Personality", "Token", "Review"];
 
 function CreatePage() {
+  const generate = useServerFn(generateIdentity);
+  const [model, setModel] = useState<string>(defaultPersonaModel);
+  const [generating, setGenerating] = useState(false);
+  const [generationError, setGenerationError] = useState("");
+  const [suggestion, setSuggestion] = useState<{ bio: string; appearance: string } | null>(null);
+  async function generateDraft() {
+    setGenerating(true); setGenerationError(""); setSuggestion(null);
+    try {
+      const result = await generate({ data: { model, name, niche, direction: appearance } });
+      if (result.ok) setSuggestion({ bio: result.bio, appearance: result.appearance });
+      else setGenerationError(result.error);
+    } catch (error) { setGenerationError(error instanceof Error ? error.message : "AI generation could not complete."); }
+    finally { setGenerating(false); }
+  }
   const [userId, setUserId] = useState<string | null | undefined>(undefined);
   const [step, setStep] = useState(0); const [saving, setSaving] = useState(false);
   const [name, setName] = useState(""); const [symbol, setSymbol] = useState(""); const [niche, setNiche] = useState("Fashion & design");
@@ -35,7 +53,7 @@ function CreatePage() {
       return;
     }
     setSaving(true);
-    const { error } = await supabase.from("personas").insert({ owner_id: userId, slug: `${slug}-${Date.now().toString().slice(-5)}`, name, symbol: symbol.toUpperCase(), niche, bio, appearance_prompt: appearance, personality: { boldness: boldness[0] }, status: "review" });
+    const { error } = await supabase.from("personas").insert({ owner_id: userId, slug: `${slug}-${Date.now().toString().slice(-5)}`, name, symbol: symbol.toUpperCase(), niche, bio, appearance_prompt: appearance, personality: { boldness: boldness[0], generation_model: model }, status: "review" });
     if (error) toast.error(error.message); else toast.success("Persona saved for review.");
     setSaving(false);
   }
@@ -47,6 +65,15 @@ function CreatePage() {
     <div className="grid gap-8 lg:grid-cols-[240px_1fr]">
       <aside><ol className="grid grid-cols-4 border border-border lg:grid-cols-1">{steps.map((label,index)=><li key={label} className={`flex items-center gap-3 border-border px-3 py-4 text-xs lg:border-b ${index===step?'bg-primary/10 text-primary':'text-muted-foreground'}`}><span className={`grid size-6 place-items-center border font-mono ${index<step?'border-primary bg-primary text-primary-foreground':'border-border'}`}>{index<step?<Check className="size-3"/>:index+1}</span><span className="hidden sm:inline">{label}</span></li>)}</ol><div className="mt-5 border border-border p-4"><p className="text-[10px] uppercase text-muted-foreground">Draft safety</p><p className="mt-2 text-xs leading-5 text-muted-foreground">Nothing launches or spends until you explicitly sign a wallet transaction.</p></div></aside>
       <section className="panel-glow border border-border bg-card p-5 sm:p-8">
+        {step === 0 && <div className="mb-8 border-b border-border pb-6">
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
+            <div className="min-w-0"><label htmlFor="persona-model" className="text-xs font-medium">AI model</label><Select value={model} onValueChange={setModel} disabled={generating}><SelectTrigger id="persona-model" className="mt-2 h-11"><SelectValue /></SelectTrigger><SelectContent>{personaModels.map((item) => <SelectItem key={item.id} value={item.id}>{item.name}</SelectItem>)}</SelectContent></Select></div>
+            <Button onClick={generateDraft} disabled={generating || !name.trim() || !niche.trim()} className="h-11 shrink-0">{generating ? <LoaderCircle className="animate-spin" /> : <Sparkles />}{generating ? "Generating…" : "Generate identity"}</Button>
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">AI generation uses workspace credits.</p>
+          {generationError && <p role="alert" className="mt-4 text-sm text-destructive">{generationError}</p>}
+          {suggestion && <div className="mt-5 space-y-4" aria-label="Generated identity"><p className="text-xs font-semibold text-primary">Generated identity · {personaModels.find((item) => item.id === model)?.name}</p><p className="text-sm leading-6">{suggestion.bio}</p><p className="text-sm leading-6 text-muted-foreground">{suggestion.appearance}</p><div className="flex gap-3"><Button onClick={() => { setBio(suggestion.bio); setAppearance(suggestion.appearance); setSuggestion(null); }}>Use identity <Check /></Button><Button variant="ghost" onClick={() => setSuggestion(null)}>Discard</Button></div></div>}
+        </div>}
         {step===0&&<div><h2 className="font-display text-2xl font-semibold">Who are you creating?</h2><p className="mt-2 text-sm text-muted-foreground">Start with the point of view. Visuals follow.</p><div className="mt-8 grid gap-5 sm:grid-cols-2"><label className="text-xs font-medium">Name<Input className="mt-2 h-11" value={name} onChange={(e)=>setName(e.target.value)} placeholder="e.g. Oria"/></label><label className="text-xs font-medium">Token symbol<Input className="mt-2 h-11 uppercase" maxLength={8} value={symbol} onChange={(e)=>setSymbol(e.target.value.toUpperCase().replace(/[^A-Z0-9]/g,""))} placeholder="ORIA"/></label><label className="text-xs font-medium sm:col-span-2">Niche<Input className="mt-2 h-11" value={niche} onChange={(e)=>setNiche(e.target.value)} /></label><label className="text-xs font-medium sm:col-span-2">One-line bio<Textarea className="mt-2 min-h-24" value={bio} onChange={(e)=>setBio(e.target.value)} placeholder="What does this creator notice that others miss?"/></label><label className="text-xs font-medium sm:col-span-2">Appearance direction<Textarea className="mt-2 min-h-28" value={appearance} onChange={(e)=>setAppearance(e.target.value)} placeholder="Describe face, styling, palette, camera language, and recurring visual signatures."/></label></div></div>}
         {step===1&&<div><h2 className="font-display text-2xl font-semibold">Give {name||"your creator"} a point of view.</h2><p className="mt-2 text-sm text-muted-foreground">These controls anchor how the agent writes and interprets trends.</p><div className="mt-10 space-y-10"><div><div className="mb-4 flex justify-between text-xs"><span>Measured</span><span className="font-mono text-primary">Boldness {boldness[0]}</span><span>Provocative</span></div><Slider value={boldness} onValueChange={setBoldness} max={100}/></div>{["Curious, never gullible","Opinionated, never hostile","Experimental, never deceptive","Synthetic identity always disclosed"].map((rule)=><div key={rule} className="flex items-center gap-3 border-b border-border pb-4 text-sm"><Check className="size-4 text-primary"/>{rule}</div>)}</div></div>}
         {step===2&&<div><h2 className="font-display text-2xl font-semibold">Set the token economy.</h2><p className="mt-2 text-sm text-muted-foreground">Fee terms become immutable at launch. Network begins on Solana devnet.</p><div className="mt-8 grid gap-5 sm:grid-cols-3"><div className="border border-border p-5"><p className="stat-label">AI treasury</p><p className="mt-3 font-mono text-3xl">{treasuryValue}%</p></div><div className="border border-border p-5"><p className="stat-label">Creator</p><p className="mt-3 font-mono text-3xl">{creator}%</p></div><div className="border border-border p-5"><p className="stat-label">Buy & burn</p><p className="mt-3 font-mono text-3xl">{burn}%</p></div></div><div className="mt-8"><div className="mb-4 flex justify-between text-xs"><span>Treasury fee allocation</span><span className="font-mono text-primary">{treasuryValue}%</span></div><Slider value={treasury} onValueChange={setTreasury} min={20} max={50}/></div><ConnectButton className="mt-10"/><Button asChild variant="outline" className="ml-3 mt-10"><Link to="/launch" search={{ name, symbol }}>Launch devnet token</Link></Button><p className="mt-3 text-xs text-muted-foreground">Devnet minting is available. Bonding curves and automatic fee splits are not active.</p></div>}

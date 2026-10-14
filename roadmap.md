@@ -1,6 +1,7 @@
 # VYRAI roadmap
 
-- [ ] Add selectable AI models and verified persona identity generation in Create AI
+- [x] Add four selectable models and real persona identity generation; all four model calls tested
+- [ ] Verify signed-in generation, applying results, and saving a draft; blocked until a creator account signs in
 
 - [x] Redesign front page as Monumental Cover with original character, signal-red palette, and architectural typography
 

@@ -5,11 +5,11 @@ import { createLovableAiGatewayProvider } from "./gateway-helpers.server.ts";
 import { createLovableAiGatewayRunIdFetch } from "./run-id.server.ts";
 const identitySchema = z.object({ bio: z.string(), appearance: z.string() });
 export async function generatePersonaIdentity(input: { model: string; name: string; niche: string; direction: string }) {
- const apiKey = process.env.LOVABLE_API_KEY;
+ const apiKey = process.env['LOVABLE_API_KEY'];
  if (!apiKey) return { ok: false as const, error: "AI generation is not configured." };
  const run = createLovableAiGatewayRunIdFetch();
  const provider = createOpenAI({ apiKey, baseURL: "https://ai.gateway.lovable.dev/v1", headers: { "Lovable-API-Key": apiKey, "X-Lovable-AIG-SDK": "vercel-ai-sdk" }, fetch: run.fetch });
- const compatible = createLovableAiGatewayProvider(apiKey, undefined, { baseURL: "https://ai.gateway.lovable.dev/v1" });
+ const compatible = createLovableAiGatewayProvider(apiKey, undefined, { baseURL: "https://ai.gateway.lovable.dev/v1", structuredOutputs: true });
  try {
   const openai = input.model.startsWith("openai/");
   const result = streamText({

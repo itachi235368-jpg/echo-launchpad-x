@@ -7,6 +7,14 @@
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 export default defineConfig({
+  vite: {
+    // Solana's Token-2022 metadata codecs publish browser and Node entry points,
+    // but no Worker-specific export. These SDKs are loaded only from browser
+    // wallet actions, so let the Worker graph resolve their browser build.
+    resolve: {
+      conditions: ["browser"],
+    },
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
